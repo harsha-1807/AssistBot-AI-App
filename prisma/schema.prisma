@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Chatbot {
+  id           String  @id @default(cuid())
+  clerkUserId  String
+  name         String
+  createdAt    DateTime @default(now())
+
+  chatbotCharacteristics ChatbotCharacteristic[]
+  chatSessions          ChatSession[]
+}
+
+model ChatbotCharacteristic {
+  id        String  @id @default(cuid())
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  chatbotId String
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Guest {
+  id        String  @id @default(cuid())
+  name      String
+  email     String
+  createdAt DateTime @default(now())
+
+  chatSessions ChatSession[]
+}
+
+model ChatSession {
+  id        String  @id @default(cuid())
+  chatbot   Chatbot @relation(fields: [chatbotId], references: [id], onDelete: Cascade)
+  chatbotId String
+  guest     Guest?  @relation(fields: [guestId], references: [id], onDelete: SetNull)
+  guestId   String?
+
+  messages  Message[]
+
+
+
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id             String  @id @default(cuid())
+  chatSession    ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+  chatSessionId  String
+  content        String
+  sender        String  // "ai" | "user"
+  createdAt      DateTime @default(now())
+}
