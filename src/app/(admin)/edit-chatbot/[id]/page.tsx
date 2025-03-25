@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Copy } from "lucide-react";
+import { Copy, Delete, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Avatar from "../../../../../components/Avatar";
-import { Chatbot } from "@/types/types";
+import { Chatbot, ChatbotCharacteristic } from "@/types/types";
+import Characteristic from "../../../../../components/Characteristic";
 
 function EditChatbot() {
   const params = useParams();
@@ -15,7 +16,11 @@ function EditChatbot() {
   const [loading, setLoading] = useState(false);
   const [chatbotName, setChatbotName] = useState("");
   const [newCharacteristic, setNewCharacteristic] = useState("");
-  const[data,setdata] = useState<Chatbot>(); 
+  const [data, setdata] = useState<Chatbot | null>(null);
+  const [characteristics, setCharacteristics] = useState<
+    ChatbotCharacteristic[]
+  >([]);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchChatbots = async () => {
@@ -25,11 +30,8 @@ function EditChatbot() {
         const data = await response.json();
         if (response.ok) {
           setdata(data);
-          console.log(data);
-          
           setChatbotName(data.name || "Unnamed Chatbot");
-        } else {
-          toast.error(data.message || "Error fetching chatbot");
+          setCharacteristics(data.chatbotCharacteristics);
         }
       } catch (error) {
         toast.error("Failed to fetch chatbot");
@@ -48,9 +50,45 @@ function EditChatbot() {
     setUrl(url);
   }, [params]);
 
+  //  Handle deletion of characteristics in real-time
+  const handleDeleteCharacteristic = (id: string) => {
+    setCharacteristics((prev) => prev.filter((char) => char.id !== Number(id)));
+  };
+
+  const handleDeleteChatbot = async () => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this chatbot?"
+    );
+    if (!confirmDelete) return;
+    try {
+      const deletePromise = fetch(`/api/chatbots/${params.id}`, {
+        method: "DELETE",
+      }).then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Failed to delete chatbot");
+        }
+        return res.json(); // ✅ Ensure response is properly handled
+      });
+
+      toast.promise(deletePromise, {
+        loading: "Deleting chatbot...",
+        success: "Chatbot deleted successfully",
+        error: "Failed to delete chatbot",
+      });
+
+      setTimeout(() => {
+        router.push("/"); // Redirect only after successful deletion
+      }, 500);
+    } catch (error) {
+      toast.error("Failed to delete chatbot");
+    }
+  };
+
+  // add characteristics
+  const handleAddCharacteristic = async (content: string) => {};
+
   return (
     <div className="px-0 md:p-10">
-
       {/* link and copy container */}
       <div className="md:sticky md:top-0 z-50 sm:max-w-sm ml-auto space-y-2 md:border p-5 rounded-b-lg md:rounded-lg bg-[#2991EE]">
         <h2 className="text-white text-sm font-bold">Link to Chat</h2>
@@ -80,12 +118,14 @@ function EditChatbot() {
       <section className="relative mt-5 bg-white p-5 md:p-10 rounded-lg ">
         <Button
           variant="destructive"
-          className="absolute top-2 right-2 h-8 w-2"
-          // onClick={() => {}}
+          className="absolute top-2 right-2 h-8 w-8 cursor-pointer "
+          onClick={() => {
+            handleDeleteChatbot();
+          }}
         >
-          X
+          <Trash />
         </Button>
-        
+
         <div className="flex space-x-4">
           {/* <h1 className="text-xl lg:text-3xl font-semibold">Chatbots</h1> */}
           <Avatar seed={chatbotName} className="w-14 " />
@@ -107,45 +147,42 @@ function EditChatbot() {
             </Button>
           </form>
         </div>
-          {/* {loading ? <p>Loading...</p> : <ul>{chatbotName}</ul>} */}
-          <h2 className="text-xl font-bold mt-10">
-            Heres what your AI knows...
-          </h2>
-          <p>
-            Your chatbot is equipped with the following information to assist
-            you in your conversations with your customers & users
-          </p>
+        {/* {loading ? <p>Loading...</p> : <ul>{chatbotName}</ul>} */}
+        <h2 className="text-xl font-bold mt-10">Heres what your AI knows...</h2>
+        <p>
+          Your chatbot is equipped with the following information to assist you
+          in your conversations with your customers & users
+        </p>
 
-          <div>
-            <form 
-            // onSubmit={}
-            
-            >
-              <Input
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleAddCharacteristic(newCharacteristic);
+              setNewCharacteristic("");
+            }}
+          >
+            <Input
               type="text"
               placeholder="Example: If customer asks for prices , provise pricing page: www.example.com/pricing"
               value={newCharacteristic}
-              onChange={(e)=>setNewCharacteristic(e.target.value)}/>
-              <Button type="submit" disabled={!newCharacteristic}>
-                Add
-              </Button>
-            </form>
+              onChange={(e) => setNewCharacteristic(e.target.value)}
+            />
+            <Button type="submit" disabled={!newCharacteristic}>
+              Add
+            </Button>
+          </form>
 
-            <ul>
-  {data?.chatbotCharacteristics?.length ? (
-    data.chatbotCharacteristics.map((characteristic) => (
-      <li key={characteristic.id} className="flex items-center justify-between">
-        <span>{characteristic.content}</span>
-        <Button variant="destructive">
-          X
-        </Button>
-      </li>
-    ))
-  ) : (
-    <p className="text-gray-500 italic">No characteristics available.</p>
-  )}
-</ul>
-          </div>
+          <ul className="flex flex-wrap-reverse gap-5">
+            {data?.chatbotCharacteristics.map((characteristic) => (
+              <Characteristic
+                key={characteristic.id}
+                characteristic={characteristic}
+                onDelete={handleDeleteCharacteristic}
+              />
+            ))}
+          </ul>
+        </div>
       </section>
     </div>
   );
