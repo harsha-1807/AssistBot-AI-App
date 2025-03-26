@@ -20,7 +20,7 @@ function Characteristic({ characteristic, onDelete }: CharacteristicProps) {
         if (!res.ok) {
           throw new Error("Failed to delete characteristic");
         }
-        return res.json(); // ✅ Ensure we resolve the JSON response
+        return res.json(); //  Ensure we resolve the JSON response
       });
 
       toast.promise(deletePromise, {
@@ -29,7 +29,7 @@ function Characteristic({ characteristic, onDelete }: CharacteristicProps) {
         error: "Failed to delete characteristic",
       });
 
-      onDelete(characteristic.id.toString()); // ✅ Remove from UI after successful deletion
+      onDelete(characteristic.id.toString()); // Remove from UI after successful deletion
     } catch (error) {
       toast.error("Failed to delete characteristic");
       console.error("Error deleting characteristic:", error);

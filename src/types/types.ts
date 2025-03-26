@@ -1,37 +1,40 @@
 export interface Chatbot {
   id: number;
-  clerk_user_id: string;
+  clerkUserId: string;
   name: string;
-  created_at: string;
+  createdAt: string;
   chatbotCharacteristics: ChatbotCharacteristic[];
   chatSessions: ChatSession[];
 }
 export interface ChatbotCharacteristic {
   id: number;
-  chatbot_id: number;
+  chatbot: Chatbot;
+  chatbotId: number;
   content: string;
-  created_at: string;
+  createdAt: string;
 }
 export interface Guest {
   id: number;
   name: string;
   email: string;
-  created_at: string;
+  createdAt: string;
+  chatSessions: ChatSession[];
 }
 
 export interface ChatSession {
   id: number;
-  chatbot_id: number;
-  guest_id: number | null;
-  created_at: string;
+  chatbot: Chatbot;
+  chatbotId: number;
+  guest: Guest;
+  guestId: number | null;
   messages: Message[];
-  guests: Guest;
+  createdAt: string;
 }
 export interface Message {
   id: number;
-  chat_session_id: number;
+  chatSession: ChatSession;
+  chatSessionId: number;
   content: string;
-  created_at: string;
   sender: "ai" | "user";
+  createdAt: string;
 }
-

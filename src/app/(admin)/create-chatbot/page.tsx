@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useState } from "react";
 import Avatar from "../../../../components/Avatar";
@@ -11,27 +11,25 @@ import { useRouter } from "next/navigation";
 function CreateChatbot() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const {user} = useUser();
+  const { user } = useUser();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
       const response = await fetch("/api/chatbots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clerkUserId:user?.id , name }),
+        body: JSON.stringify({ clerkUserId: user?.id, name }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         toast.success(`Chatbot "${data.name}" created successfully!`);
-        setName(""); 
+        setName("");
         router.push(`/edit-chatbot/${data.id}`);
       } else {
         toast.error(data.message || "Error creating chatbot.");
@@ -53,23 +51,26 @@ function CreateChatbot() {
           Create a new chatbot to assist you in your conversations with your
           customers.
         </h2>
-        <form className="flex flex-col md:flex-row gap-2 mt-5" onSubmit={handleSubmit}>
-          <Input 
-            type="text" 
-            placeholder="ChatBot Name..." 
+        <form
+          className="flex flex-col md:flex-row gap-2 mt-5"
+          onSubmit={handleSubmit}
+        >
+          <Input
+            type="text"
+            placeholder="ChatBot Name..."
             className="max-w-lg"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            required 
+            required
           />
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading} className="cursor-pointer">
             {loading ? "Creating..." : "Create Chatbot"}
           </Button>
-
         </form>
-          <p className="text-gray-500 text-sm mt-2">Example: Customer Support Chatbot</p>
+        <p className="text-gray-500 text-sm mt-2">
+          Example: Customer Support Chatbot
+        </p>
         {/* {message && <p className="mt-3 text-center text-sm">{message}</p>} */}
-        
       </div>
     </div>
   );

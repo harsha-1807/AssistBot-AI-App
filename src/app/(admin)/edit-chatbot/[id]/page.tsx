@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Copy, Delete, Trash } from "lucide-react";
+import { Copy, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Avatar from "../../../../../components/Avatar";
-import { Chatbot, ChatbotCharacteristic } from "@/types/types";
 import Characteristic from "../../../../../components/Characteristic";
+import { ChatbotCharacteristic } from "@/types/types";
 
 function EditChatbot() {
   const params = useParams();
@@ -16,30 +16,28 @@ function EditChatbot() {
   const [loading, setLoading] = useState(false);
   const [chatbotName, setChatbotName] = useState("");
   const [newCharacteristic, setNewCharacteristic] = useState("");
-  const [data, setdata] = useState<Chatbot | null>(null);
   const [characteristics, setCharacteristics] = useState<
     ChatbotCharacteristic[]
   >([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchChatbots = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/chatbots/${params.id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setdata(data);
-          setChatbotName(data.name || "Unnamed Chatbot");
-          setCharacteristics(data.chatbotCharacteristics);
-        }
-      } catch (error) {
-        toast.error("Failed to fetch chatbot");
-        console.error("API Error:", error);
-      } finally {
-        setLoading(false);
+  const fetchChatbots = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/chatbots/${params.id}`);
+      const data = await response.json();
+      if (response.ok) {
+        setChatbotName(data.name || "Unnamed Chatbot");
+        setCharacteristics(data.chatbotCharacteristics);
       }
-    };
+    } catch (error) {
+      toast.error("Failed to fetch chatbot");
+      console.error("API Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     if (params.id) {
       fetchChatbots();
     }
@@ -51,8 +49,10 @@ function EditChatbot() {
   }, [params]);
 
   //  Handle deletion of characteristics in real-time
-  const handleDeleteCharacteristic = (id: string) => {
-    setCharacteristics((prev) => prev.filter((char) => char.id !== Number(id)));
+  const handleDeleteCharacteristic = async (id: string) => {
+    if (id) {
+      await fetchChatbots();
+    }
   };
 
   const handleDeleteChatbot = async () => {
@@ -67,7 +67,7 @@ function EditChatbot() {
         if (!res.ok) {
           throw new Error("Failed to delete chatbot");
         }
-        return res.json(); // ✅ Ensure response is properly handled
+        return res.json(); //  Ensure response is properly handled
       });
 
       toast.promise(deletePromise, {
@@ -79,14 +79,80 @@ function EditChatbot() {
       setTimeout(() => {
         router.push("/"); // Redirect only after successful deletion
       }, 500);
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete chatbot");
     }
   };
 
   // add characteristics
-  const handleAddCharacteristic = async (content: string) => {};
+  const handleAddCharacteristic = async (content: string) => {
+    if (!content.trim()) {
+      return toast.error("Content is required");
+    }
 
+    try {
+      // Perform the fetch inside `toast.promise`
+      await toast.promise(
+        fetch(`/api/chatbot-characteristic/${params.id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ content }),
+        }).then(async (res) => {
+          if (!res.ok) {
+            throw new Error("Failed to add characteristic");
+          }
+          return res.json();
+        }),
+        {
+          loading: "Adding characteristic...",
+          success: "Characteristic added successfully",
+          error: "Failed to add characteristic",
+        }
+      );
+
+      await fetchChatbots();
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleUpdateChatbotName = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!chatbotName.trim()) {
+      return toast.error("Chatbot name cannot be empty");
+    }
+
+    try {
+      await toast.promise(
+        fetch(`/api/chatbots/${params.id}`, {
+          method: "PATCH", // Use PATCH or PUT depending on your API
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name: chatbotName }),
+        }).then(async (res) => {
+          if (!res.ok) {
+            throw new Error("Failed to update chatbot name");
+          }
+          return res.json();
+        }),
+        {
+          loading: "Updating chatbot name...",
+          success: "Chatbot name updated successfully",
+          error: "Failed to update chatbot name",
+        }
+      );
+
+      await fetchChatbots(); // Refresh chatbot data after updating name
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
+  if (loading) return <p>Loading...</p>;
   return (
     <div className="px-0 md:p-10">
       {/* link and copy container */}
@@ -102,7 +168,7 @@ function EditChatbot() {
           </Link>
           <Button
             size="sm"
-            className="px-3"
+            className="px-3 cursor-pointer"
             onClick={() => {
               navigator.clipboard.writeText(url);
               toast.success("Link copied to clipboard");
@@ -142,7 +208,12 @@ function EditChatbot() {
               className="max-w-lg"
               required
             ></Input>
-            <Button type="submit" disabled={!chatbotName}>
+            <Button
+              type="submit"
+              disabled={!chatbotName}
+              onClick={handleUpdateChatbotName}
+              className="cursor-pointer"
+            >
               Update
             </Button>
           </form>
@@ -154,27 +225,32 @@ function EditChatbot() {
           in your conversations with your customers & users
         </p>
 
-        <div>
+        <div className="bg-gray-200 p-5 rounded-md mt-5">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleAddCharacteristic(newCharacteristic);
               setNewCharacteristic("");
             }}
+            className="flex space-x-2 items-center"
           >
             <Input
               type="text"
-              placeholder="Example: If customer asks for prices , provise pricing page: www.example.com/pricing"
+              placeholder="Example: If customer asks for prices , provide pricing page: www.example.com/pricing"
               value={newCharacteristic}
               onChange={(e) => setNewCharacteristic(e.target.value)}
             />
-            <Button type="submit" disabled={!newCharacteristic}>
+            <Button
+              type="submit"
+              disabled={!newCharacteristic}
+              className="cursor-pointer"
+            >
               Add
             </Button>
           </form>
 
-          <ul className="flex flex-wrap-reverse gap-5">
-            {data?.chatbotCharacteristics.map((characteristic) => (
+          <ul className="flex flex-wrap-reverse gap-5 mt-4">
+            {characteristics.map((characteristic) => (
               <Characteristic
                 key={characteristic.id}
                 characteristic={characteristic}
