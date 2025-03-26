@@ -54,3 +54,32 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { name } = await req.json();
+
+    if (!name.trim()) {
+      return NextResponse.json(
+        { message: "Chatbot name cannot be empty" },
+        { status: 400 }
+      );
+    }
+
+    const updatedChatbot = await prisma.chatbot.update({
+      where: { id: params.id },
+      data: { name },
+    });
+
+    return NextResponse.json(updatedChatbot, { status: 200 });
+  } catch (error) {
+    console.error("Error updating chatbot name:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
