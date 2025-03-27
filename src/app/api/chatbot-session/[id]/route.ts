@@ -25,7 +25,6 @@ export async function GET(_req: NextRequest, context: { params: { id: string } }
       return NextResponse.json({ message: "Chat session not found" }, { status: 404 });
     }
 
-    console.log("Chat session found:", chatSession);
     return NextResponse.json(chatSession, { status: 200 });
 
   } catch (error) {

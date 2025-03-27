@@ -1,13 +1,20 @@
 import React from 'react'
 import Header from '../../../components/Header';
 import Sidebar from '../../../components/Sidebar';
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
-function AdminLayout({
+async function AdminLayout({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-  return (
+
+    const {userId} = await auth();
+    if(!userId){
+      return redirect('/login')
+    }
+   return (
     <div className='flex flex-col flex-1'>
         {/* header  */}
         <Header/>
