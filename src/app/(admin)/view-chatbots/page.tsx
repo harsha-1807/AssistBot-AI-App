@@ -24,7 +24,6 @@ function ViewChatbots() {
         }
         const data = await response.json();
         setChatbots(data);
-        console.log(data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -77,7 +76,7 @@ function ViewChatbots() {
               </div>
 
               <hr className="mt-4" />
-              <div className="flex md:grid md:grid-cols-2 gap-10 md:gap-5 p-5">
+              <div className="grid grid-cols-2 gap-10 md:gap-5 p-5">
                 <h3 className="italic">Characteristics:</h3>
 
                 <ul className="text-xs">
