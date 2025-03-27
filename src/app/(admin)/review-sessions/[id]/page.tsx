@@ -18,14 +18,12 @@ export default function ReviewSession() {
 
     const fetchSession = async () => {
       try {
-        console.log(id);
         
         const response = await fetch(`/api/chatbot-session/${id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch session data");
         }
         const data = await response.json();
-        console.log("session",data);
         
         setSession(data);
       } catch (error) {

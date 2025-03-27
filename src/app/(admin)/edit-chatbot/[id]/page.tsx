@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import Avatar from "../../../../../components/Avatar";
 import Characteristic from "../../../../../components/Characteristic";
 import { ChatbotCharacteristic } from "@/types/types";
+import Loading from "../../loading";
 
 function EditChatbot() {
   const params = useParams();
@@ -152,7 +153,7 @@ function EditChatbot() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading/>;
   return (
     <div className="px-0 md:p-10">
       {/* link and copy container */}

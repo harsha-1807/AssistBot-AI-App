@@ -5,6 +5,7 @@ import { Chatbot } from "@/types/types";
 import { Button } from "@/components/ui/button";
 import Avatar from "../../../../components/Avatar";
 import Link from "next/link";
+import Loading from "../loading";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,7 @@ function ViewChatbots() {
   );
 
   if (!user?.id) return;
-  if (loading) return <p>Loading chatbots...</p>;
+  if (loading) return <Loading/>;
 
   return (
     <div className="flex-1 pb-20 p-10">
