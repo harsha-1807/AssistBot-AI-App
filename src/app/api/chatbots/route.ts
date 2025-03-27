@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
     const chatbot = await prisma.chatbot.create({
       data: { clerkUserId, name },
     });
@@ -46,7 +45,13 @@ export async function GET(req: NextRequest) {
       where: { clerkUserId: clerkUserId },
       include: {
         chatbotCharacteristics: true,
-        chatSessions: true,
+        chatSessions: {
+          include: {
+            guest: true,
+            messages: true,
+          },
+          orderBy: { createdAt: "desc" },
+        },
       },
     });
 
