@@ -2,11 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
-  _: NextRequest,
-  context: { params: { id: string } } // Fix: Use `context` instead of destructuring directly
+  _req: NextRequest,
+  context: { params: { id: string }  } 
 ) {
   try {
-    const { id } = context.params; // Extract `id` properly
+    const  id  = context.params.id; // Extract `id` properly
 
     const deleteCharacteristic = await prisma.chatbotCharacteristic.delete({
       where: { id },
@@ -27,7 +27,7 @@ export async function DELETE(
 
 export async function POST(
   req: NextRequest,
-  context: { params: { id: string } } // Fix: Use `context` properly
+  context: { params: { id: string }  } 
 ) {
   try {
     const { content } = await req.json();
@@ -39,7 +39,7 @@ export async function POST(
       );
     }
 
-    const { id: chatbotId } = context.params; // Extract `id` properly
+    const chatbotId = context.params.id; // Extract `id` properly
 
     const newCharacteristic = await prisma.chatbotCharacteristic.create({
       data: {

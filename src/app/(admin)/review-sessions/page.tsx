@@ -3,6 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import { Chatbot } from "@/types/types"; // Import necessary types
 import ChatbotSessions from "../../../../components/ChatbotSessions";
+import Loading from "../loading";
 
 function ViewSessions() {
   const { user } = useUser();
@@ -19,8 +20,6 @@ function ViewSessions() {
           throw new Error("Failed to fetch chatbots");
         }
         const data = await response.json();
-        console.log(data);
-        
         setChatbots(data);
       } catch (error) {
         console.error(error);
@@ -33,7 +32,7 @@ function ViewSessions() {
   }, [user?.id]);
 
   if (!user?.id) return null;
-  if (loading) return <p>Loading chat sessions...</p>;
+  if (loading) return <Loading/>;
 
   return (
     <div className="w-5xl mx-auto p-5">
