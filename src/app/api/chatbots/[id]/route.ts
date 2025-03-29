@@ -5,7 +5,7 @@ export async function GET(
   _: NextRequest,
   context: { params: { id: string } }
 ) {
-  const { id } = await context.params;
+  const { id } =  context.params;
   try {
     const chatbot = await prisma.chatbot.findUnique({
       where: { id },

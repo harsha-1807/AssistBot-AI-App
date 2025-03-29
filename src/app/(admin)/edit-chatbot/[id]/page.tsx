@@ -22,6 +22,11 @@ function EditChatbot() {
   >([]);
   const router = useRouter();
 
+  const BASE_URL =
+    process.env.NODE_ENV !== "development"
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : "http://localhost:3000";
+
   const fetchChatbots = async () => {
     setLoading(true);
     try {
@@ -45,7 +50,7 @@ function EditChatbot() {
   }, [params.id]);
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_BASE_URL}/chatbot/${params.id}`;
+    const url = `${BASE_URL}/chatbot/${params.id}`;
     setUrl(url);
   }, [params]);
 
@@ -153,7 +158,7 @@ function EditChatbot() {
     }
   };
 
-  if (loading) return <Loading/>;
+  if (loading) return <Loading />;
   return (
     <div className="px-0 md:p-10">
       {/* link and copy container */}

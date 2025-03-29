@@ -25,11 +25,11 @@ function Messages({
   })
   return (
     <div className="bg-white flex-1 flex flex-col space-y-10 py-10 px-5 rounded-lg overflow-y-auto ">
-      {messages.map((message) => {
+      {messages.map((message, index) => {
         const isSender = message.sender !== "user";
         return (
           <div
-            key={message.id}
+            key={message.id || index}
             className={`chat ${isSender ? "chat-start" : "chat-end"} relative` }
           >
             {isReviewsPage && (
@@ -59,31 +59,31 @@ function Messages({
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components = {{
-                    ul: ({ node, ...props }) => (
+                    ul: ({  ...props }) => (
                       <ul {...props} className="list-disc list-inside ml-5 mb-5" />
                     ),
-                    ol: ({ node, ...props }) => (
+                    ol: ({  ...props }) => (
                       <ol {...props} className="list-decimal list-inside ml-5 mb-5" />
                     ),
-                    h1: ({ node, ...props }) => (
+                    h1: ({  ...props }) => (
                       <h1 {...props} className="text-2xl font-bold mb-5" />
                     ),
-                    h2: ({ node, ...props }) => (
+                    h2: ({  ...props }) => (
                       <h2 {...props} className="text-xl font-bold mb-5" />
                     ),
-                    h3: ({ node, ...props }) => (
+                    h3: ({  ...props }) => (
                       <h3 {...props} className="text-lg font-bold mb-5" />
                     ),
-                    table: ({ node, ...props }) => (
+                    table: ({  ...props }) => (
                         <table
                           {...props}
                           className="table-auto w-full border-separate border-2 rounded-sm border-spacing-4 border-white mb-5"
                         />
                       ),
-                      th: ({ node, ...props }) => (
+                      th: ({  ...props }) => (
                         <th {...props} className="text-left underline" />
                       ),
-                      p: ({ node, ...props }) => (
+                      p: ({  ...props }) => (
                         <p
                           {...props}
                           className={`whitespace-break-spaces mb-5 ${
@@ -91,7 +91,7 @@ function Messages({
                           } ${isSender ? "text-white" : "text-gray-700"}`}
                         />
                       ),
-                      a: ({ node, ...props }) => (
+                      a: ({  ...props }) => (
                         <a
                           {...props}
                           target="_blank"

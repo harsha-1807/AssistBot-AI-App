@@ -14,7 +14,7 @@ export async function GET(_req: NextRequest, context: { params: { id: string } }
     const chatSession = await prisma.chatSession.findUnique({
       where: { id },
       include: {
-        messages: { orderBy: { createdAt: "desc" } },
+        messages: { orderBy: { createdAt: "asc" } },
         chatbot: { select: { name: true } },
         guest: { select: { name: true, email: true } }, 
       },

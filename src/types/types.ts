@@ -26,14 +26,14 @@ export interface ChatSession {
   chatbot: Chatbot;
   chatbotId: number;
   guest: Guest;
-  guestId: number | null;
+  guestId: string | null;
   messages: Message[];
   createdAt: string;
 }
 export interface Message {
-  id: number;
-  chatSession: ChatSession;
-  chatSessionId: number;
+  id: string;
+  chatSession?: ChatSession;
+  chatSessionId: string;
   content: string;
   sender: "ai" | "user";
   createdAt: string;
