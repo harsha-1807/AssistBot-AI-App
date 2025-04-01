@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } 
 ) {
-  const { id } =  context.params;
+  const  id  =  (await params).id;
   try {
     const chatbot = await prisma.chatbot.findUnique({
       where: { id },
@@ -35,11 +35,11 @@ export async function GET(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> } 
 ) {
   try {
     const deletedChatbot = await prisma.chatbot.delete({
-      where: { id: params.id },
+      where: { id: (await params).id },
     });
 
     return NextResponse.json(
@@ -57,7 +57,7 @@ export async function DELETE(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { name } = await req.json();
@@ -70,7 +70,7 @@ export async function PATCH(
     }
 
     const updatedChatbot = await prisma.chatbot.update({
-      where: { id: params.id },
+      where: { id: (await params).id },
       data: { name },
     });
 

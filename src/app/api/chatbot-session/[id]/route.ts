@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(_req: NextRequest, context: { params: { id: string } }) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
   try {
-    const { id } = context.params;
+    const  id  = (await params).id;
 
     if (!id) {
       console.error("Missing session ID");
