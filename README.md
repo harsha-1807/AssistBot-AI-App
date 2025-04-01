@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chatbot AI Platform
 
-## Getting Started
+## 📌 Overview
 
-First, run the development server:
+A no-code platform for building AI-powered chatbots that can be seamlessly integrated into any website. Empower businesses to create intelligent conversational agents with custom personalities, knowledge bases, and response patterns. Users can:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Define chatbot personas** through natural language characteristics
+- **Train chatbots** using custom Q&A pairs and behavioral guidelines
+- **Use chatbots** with a shareable link
+- **Analyze conversations** through detailed session transcripts
+- **Iterate quickly** with real-time configuration updates
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Target Users**: Customer support teams, E-commerce businesses, SaaS companies, and developers looking to add AI conversation capabilities.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Key Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### **Core Functionality**
 
-## Learn More
+- AI Personality Crafting
+- Instant Deployment Links
+- Integration
+- Conversation Analytics
+- Real-time Configuration Sync
 
-To learn more about Next.js, take a look at the following resources:
+### **Advanced Capabilities**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Dynamic Learning**: Chatbots improve through user interactions
+- **Multi-language Support**: Communicate with users in their preferred language
+- **Contextual Memory**: Maintain conversation history across sessions
+- **Security**: End-to-end encryption for sensitive data
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### **Customization Options**
 
-## Deploy on Vercel
+- Response tone control (formal, casual, technical)
+- Fallback strategies for unknown queries
+- Operating hours scheduling
+- Escalation protocols to human agents
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Frontend:** Next.js (React, TypeScript, ShadCN/UI)
+- **Backend:** Next.js API Routes, Prisma ORM, PostgreSQL (Neon)
+- **Authentication:** Clerk
+- **Storage:** Neon
+- **Deployment:** Vercel
+- **UI Librabries:** ShadCN/UI, Dicebear(Avatar)
+- **AI API Intergration:** Google's Gemini (gemini-1.5-flash-latest)
+
+## Deployment Link
+
+[AssistBot AI](https://assistbot-ai-app.vercel.app/)
