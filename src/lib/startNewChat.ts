@@ -17,7 +17,6 @@ export default async function startNewChat(
 
     const guestData = await guestResponse.json();
     const guestId = guestData.id; // Extract guest ID
-    console.log(guestId);
 
     // 2. Initialize a new chat session
     const chatResponse = await fetch("/api/chatbot-session", {
@@ -27,7 +26,6 @@ export default async function startNewChat(
     });
     const chatSessionData = await chatResponse.json();
     const chatSessionId = chatSessionData.id;
-    console.log(chatSessionData);
 
     if (!chatResponse.ok) {
       throw new Error("Failed to create chat session");

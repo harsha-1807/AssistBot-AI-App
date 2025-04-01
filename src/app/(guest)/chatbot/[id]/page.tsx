@@ -51,7 +51,6 @@ function ChatbotPage() {
 
   const params = useParams();
   const id = params.id;
-  
 
   useEffect(() => {
     if (!id) return; // Ensure ID is available
@@ -65,12 +64,6 @@ function ChatbotPage() {
         const data = await response.json();
 
         setchatBotData(data);
-
-        // Fetch messages using the chatSessionId from chatbotData
-        // if (data.chatSessions.length > 0) {
-        //   const chatSessionId = data.chatSessions[0].id;
-        //   fetchMessages(chatSessionId);
-        // }
       } catch (err) {
         return err;
       } finally {
@@ -78,7 +71,6 @@ function ChatbotPage() {
       }
     };
 
-    
     fetchChatbot();
   }, [id]);
   const fetchMessages = async (chatSessionId: string) => {
@@ -88,7 +80,6 @@ function ChatbotPage() {
 
       const data = await response.json();
       setMessages(data);
-      console.log(data);
     } catch (err) {
       console.error("Error fetching messages:", err);
     }
@@ -101,27 +92,26 @@ function ChatbotPage() {
     const chatId = await startNewChat(name, email, String(id));
     setChatId(chatId);
 
-    fetchMessages(String(chatId))
+    fetchMessages(String(chatId));
 
     setLoading(false);
     setIsOpen(false);
   };
-
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     const { message: formMessage } = values;
     const message = formMessage;
     form.reset();
-  
+
     if (!name || !email) {
       setIsOpen(true);
       setLoading(false);
       return;
     }
-  
+
     if (!message.trim()) return;
-  
+
     // Create temporary messages
     const userMessage: Message = {
       id: Date.now().toString(), // Use string ID to match backend
@@ -130,23 +120,27 @@ function ChatbotPage() {
       chatSessionId: chatId.toString(), // Ensure string type
       sender: "user",
     };
-  
+
     const loadingMessage: Message = {
-      id: 'temp-' + Date.now().toString(), // Temporary ID
+      id: "temp-" + Date.now().toString(), // Temporary ID
       content: "Thinking...",
       createdAt: new Date().toISOString(),
       chatSessionId: chatId.toString(),
       sender: "ai",
     };
-  
-    setMessages((prevMessages) => [...prevMessages, userMessage, loadingMessage]);
-  
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      userMessage,
+      loadingMessage,
+    ]);
+
     try {
       if (!chatId || !id || !message || !name) {
         console.error("Missing required fields", { chatId, id, message, name });
         return;
       }
-  
+
       const response = await fetch("/api/send-message", {
         method: "POST",
         headers: {
@@ -159,21 +153,21 @@ function ChatbotPage() {
           content: message,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const result = await response.json();
-      
+
       // Update messages correctly
-      setMessages(prevMessages => 
-        prevMessages.map(msg => 
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
           msg.id === loadingMessage.id
-            ? { 
-                ...msg, 
+            ? {
+                ...msg,
                 id: result.id, // Use the actual ID from backend
-                content: result.response // Changed from result.content to result.response
+                content: result.response, // Changed from result.content to result.response
               }
             : msg
         )
@@ -181,8 +175,8 @@ function ChatbotPage() {
     } catch (error) {
       console.error("Error sending message:", error);
       // Update with error message
-      setMessages(prevMessages => 
-        prevMessages.map(msg => 
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
           msg.id === loadingMessage.id
             ? { ...msg, content: "Sorry, something went wrong!" }
             : msg
@@ -223,6 +217,7 @@ function ChatbotPage() {
                   Email
                 </Label>
                 <Input
+                  type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -247,7 +242,7 @@ function ChatbotPage() {
       <div className="flex flex-col w-full max-w-xl mx-auto bg-white md:rounded-t-lg shadow-2xl ">
         <div className="pb-4 border-b sticky top-0 z-50 bg-[#407DFB] py-5 px-10 text-white md:rounded-t-lg flex items-center space-x-4">
           <Avatar
-            seed={chatBotData?.name || 'anonymous'}
+            seed={chatBotData?.name || "anonymous"}
             className="h-12 w-12 bg-white rounded-full border-2 border-white"
           />
 
@@ -263,8 +258,10 @@ function ChatbotPage() {
         />
 
         <Form {...form}>
-          <form className="flex items-start sticky bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-md"
-          onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            className="flex items-start sticky bottom-0 z-50 space-x-4 drop-shadow-lg p-4 bg-gray-100 rounded-md"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <FormField
               control={form.control}
               name="message"
@@ -298,4 +295,3 @@ function ChatbotPage() {
 }
 
 export default ChatbotPage;
-

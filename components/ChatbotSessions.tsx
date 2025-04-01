@@ -19,7 +19,6 @@ function ChatbotSessions({ chatbots }: { chatbots: Chatbot[] }) {
       (a, b) => b.chatSessions.length - a.chatSessions.length
     );
     setSortedChatbots(sortedArray);
-    
   }, [chatbots]);
 
   return (
@@ -39,9 +38,9 @@ function ChatbotSessions({ chatbots }: { chatbots: Chatbot[] }) {
                   <AccordionTrigger>
                     <div className="flex text-left items-center w-full">
                       <Avatar seed={chatbot.name} className="h-10 w-10 mr-4" />
-                      <div className="flex flex-1 justify-between space-x-4">
+                      <div className="flex flex-1 justify-between space-x-4 text-xs md:text-sm">
                         <p>{chatbot.name}</p>
-                        <p className="pr-4 font-bold text-right">
+                        <p className="md:pr-4 font-bold text-right">
                           {chatbot.chatSessions.length} sessions
                         </p>
                       </div>
@@ -52,15 +51,15 @@ function ChatbotSessions({ chatbots }: { chatbots: Chatbot[] }) {
                       <Link
                         href={`/review-sessions/${session.id}`}
                         key={session.id}
-                        className="relative p-10 bg-[#2991EE] text-white rounded-md block"
+                        className="relative py-10 pl-3 pr-15 md:p-10 bg-[#2991EE] text-white rounded-md block overflow-scroll md:overflow-auto"
                       >
-                        <p className="text-lg font-bold">
+                        <p className="text-md md:text-lg font-bold">
                           {session.guest?.name || "Anonymous"}
                         </p>
-                        <p className="text-sm font-light">
+                        <p className="text-xs md:text-sm font-light">
                           {session.guest?.email || "No email provided"}
                         </p>
-                        <p className="absolute top-5 right-5 text-sm">
+                        <p className="absolute top-5 right-5 text-xs md:text-sm">
                           <ReactTimeago date={new Date(session.createdAt)} />
                         </p>
                       </Link>
