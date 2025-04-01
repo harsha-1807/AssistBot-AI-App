@@ -1,7 +1,7 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
-import { Chatbot } from "@/types/types"; // Import necessary types
+import { Chatbot } from "@/types/types";
 import ChatbotSessions from "../../../../components/ChatbotSessions";
 import Loading from "../loading";
 
@@ -32,13 +32,15 @@ function ViewSessions() {
   }, [user?.id]);
 
   if (!user?.id) return null;
-  if (loading) return <Loading/>;
+  if (loading) return <Loading />;
 
   return (
-    <div className="w-5xl mx-auto p-5">
+    <div className="w-[100vw] md:w-5xl mx-auto p-5">
       <h1 className="text-2xl font-bold ">Chat Sessions</h1>
-      <h1 className="text-sm mb-4">Review all the ChatbotSessions that your chatbot had with your customers</h1>
-      <ChatbotSessions chatbots={chatbots}  />
+      <h1 className="text-sm mb-4">
+        Review all the ChatbotSessions that your chatbot had with your customers
+      </h1>
+      <ChatbotSessions chatbots={chatbots} />
     </div>
   );
 }

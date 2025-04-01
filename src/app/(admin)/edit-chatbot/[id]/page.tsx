@@ -57,7 +57,7 @@ function EditChatbot() {
   //  Handle deletion of characteristics in real-time
   const handleDeleteCharacteristic = async (id: string) => {
     if (id) {
-      await fetchChatbots();
+      setCharacteristics((prev) => prev.filter((c) => c.id.toString() !== id));
     }
   };
 
@@ -95,32 +95,27 @@ function EditChatbot() {
     if (!content.trim()) {
       return toast.error("Content is required");
     }
-
+    toast.loading("Adding characteristic...");
     try {
-      // Perform the fetch inside `toast.promise`
-      await toast.promise(
-        fetch(`/api/chatbot-characteristic/${params.id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ content }),
-        }).then(async (res) => {
-          if (!res.ok) {
-            throw new Error("Failed to add characteristic");
-          }
-          return res.json();
-        }),
-        {
-          loading: "Adding characteristic...",
-          success: "Characteristic added successfully",
-          error: "Failed to add characteristic",
-        }
-      );
+      const response = await fetch(`/api/chatbot-characteristic/${params.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content }),
+      });
 
-      await fetchChatbots();
-    } catch {
-      toast.error("Something went wrong");
+      if (!response.ok) throw new Error("Failed to add characteristic");
+
+      const newCharacteristic = await response.json();
+
+      // Update state directly with API response
+      setCharacteristics((prev) => [...prev, newCharacteristic]);
+      setNewCharacteristic("");
+      toast.dismiss();
+      toast.success("Characteristic added successfully");
+    } catch  {
+      toast.error("Failed to add characteristic");
     }
   };
 
@@ -151,8 +146,6 @@ function EditChatbot() {
           error: "Failed to update chatbot name",
         }
       );
-
-      await fetchChatbots(); // Refresh chatbot data after updating name
     } catch {
       toast.error("Something went wrong");
     }
@@ -187,17 +180,7 @@ function EditChatbot() {
       </div>
 
       {/* chatbot info container */}
-      <section className="relative mt-5 bg-white p-5 md:p-10 rounded-lg ">
-        <Button
-          variant="destructive"
-          className="absolute top-2 right-2 h-8 w-8 cursor-pointer "
-          onClick={() => {
-            handleDeleteChatbot();
-          }}
-        >
-          <Trash />
-        </Button>
-
+      <section className="mt-5 bg-white p-5 md:p-10 rounded-lg ">
         <div className="flex space-x-4">
           {/* <h1 className="text-xl lg:text-3xl font-semibold">Chatbots</h1> */}
           <Avatar seed={chatbotName} className="w-14 " />
@@ -222,6 +205,15 @@ function EditChatbot() {
             >
               Update
             </Button>
+            <Button
+              variant="destructive"
+              className="h-8 w-8 cursor-pointer "
+              onClick={() => {
+                handleDeleteChatbot();
+              }}
+            >
+              <Trash />
+            </Button>
           </form>
         </div>
         {/* {loading ? <p>Loading...</p> : <ul>{chatbotName}</ul>} */}
@@ -245,6 +237,8 @@ function EditChatbot() {
               placeholder="Example: If customer asks for prices , provide pricing page: www.example.com/pricing"
               value={newCharacteristic}
               onChange={(e) => setNewCharacteristic(e.target.value)}
+              className="border-gray-300 border-2"
+              autoComplete="new-password"
             />
             <Button
               type="submit"
