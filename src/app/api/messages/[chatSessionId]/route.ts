@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _: Request,
-  context: { params: { chatSessionId: string } }
+  { params }: { params: Promise<{ chatSessionId: string }> }
 ) {
-  const { chatSessionId } = context.params;
+  const  chatSessionId  = (await params).chatSessionId;
 
   try {
     // Check if chat session exists
