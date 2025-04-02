@@ -54,7 +54,7 @@ function EditChatbot() {
     setUrl(url);
   }, [params]);
 
-  //  Handle deletion of characteristics in real-time
+  //  Handling deletion of characteristics in real-time
   const handleDeleteCharacteristic = async (id: string) => {
     if (id) {
       setCharacteristics((prev) => prev.filter((c) => c.id.toString() !== id));
@@ -73,7 +73,7 @@ function EditChatbot() {
         if (!res.ok) {
           throw new Error("Failed to delete chatbot");
         }
-        return res.json(); //  Ensure response is properly handled
+        return res.json(); 
       });
 
       toast.promise(deletePromise, {
@@ -81,9 +81,9 @@ function EditChatbot() {
         success: "Chatbot deleted successfully",
         error: "Failed to delete chatbot",
       });
-
+// Redirecting after successful deletion
       setTimeout(() => {
-        router.push("/"); // Redirect only after successful deletion
+        router.push("/"); 
       }, 500);
     } catch {
       toast.error("Failed to delete chatbot");
@@ -129,7 +129,7 @@ function EditChatbot() {
     try {
       await toast.promise(
         fetch(`/api/chatbots/${params.id}`, {
-          method: "PATCH", // Use PATCH or PUT depending on your API
+          method: "PATCH", 
           headers: {
             "Content-Type": "application/json",
           },
@@ -185,7 +185,7 @@ function EditChatbot() {
           {/* <h1 className="text-xl lg:text-3xl font-semibold">Chatbots</h1> */}
           <Avatar seed={chatbotName} className="w-14 " />
           <form
-            // onSubmit={handleUpdateChatbot}
+          onSubmit={handleUpdateChatbotName}
             className="flex flex-1 space-x-2 items-center"
           >
             <Input
@@ -200,7 +200,6 @@ function EditChatbot() {
             <Button
               type="submit"
               disabled={!chatbotName}
-              onClick={handleUpdateChatbotName}
               className="cursor-pointer"
             >
               Update
@@ -216,7 +215,6 @@ function EditChatbot() {
             </Button>
           </form>
         </div>
-        {/* {loading ? <p>Loading...</p> : <ul>{chatbotName}</ul>} */}
         <h2 className="text-xl font-bold mt-10">Heres what your AI knows...</h2>
         <p>
           Your chatbot is equipped with the following information to assist you

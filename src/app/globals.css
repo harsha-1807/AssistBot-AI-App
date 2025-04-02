@@ -4,6 +4,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+.Button{
+  cursor: pointer;
+}
 /* :root {
   --background: #ffffff;
   --foreground: #171717;

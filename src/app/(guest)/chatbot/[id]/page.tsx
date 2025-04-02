@@ -28,6 +28,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   message: z.string().min(2, "Your message is too short!"),
@@ -41,7 +42,7 @@ function ChatbotPage() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatBotData, setchatBotData] = useState<Chatbot>();
-
+  const [messageLoading,setmessageLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -99,7 +100,7 @@ function ChatbotPage() {
   };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
+    setmessageLoading(true);
     const { message: formMessage } = values;
     const message = formMessage;
     form.reset();
@@ -114,10 +115,10 @@ function ChatbotPage() {
 
     // Create temporary messages
     const userMessage: Message = {
-      id: Date.now().toString(), // Use string ID to match backend
+      id: Date.now().toString(), 
       content: message,
       createdAt: new Date().toISOString(),
-      chatSessionId: chatId.toString(), // Ensure string type
+      chatSessionId: chatId.toString(), 
       sender: "user",
     };
 
@@ -148,8 +149,8 @@ function ChatbotPage() {
         },
         body: JSON.stringify({
           name: name,
-          chatSessionId: chatId.toString(), // Ensure string type
-          ChatbotId: id.toString(), // Changed to match backend's expected param name (capital C)
+          chatSessionId: chatId.toString(),
+          ChatbotId: id.toString(), 
           content: message,
         }),
       });
@@ -166,8 +167,8 @@ function ChatbotPage() {
           msg.id === loadingMessage.id
             ? {
                 ...msg,
-                id: result.id, // Use the actual ID from backend
-                content: result.response, // Changed from result.content to result.response
+                id: result.id, 
+                content: result.response,
               }
             : msg
         )
@@ -183,7 +184,7 @@ function ChatbotPage() {
         )
       );
     } finally {
-      setLoading(false);
+      setmessageLoading(false);
     }
   }
 
@@ -221,7 +222,7 @@ function ChatbotPage() {
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="John@mail.comm"
+                  placeholder="John@mail.com"
                   className="col-span-3"
                 />
               </div>
@@ -269,10 +270,22 @@ function ChatbotPage() {
                 <FormItem className="flex-1">
                   <FormLabel hidden>Message</FormLabel>
                   <FormControl>
-                    <Input
+                    <Textarea 
                       placeholder="Type a message..."
                       {...field}
-                      className="p-8"
+                      className="p-4 w-full resize-none overflow-y-auto min-h-[60px] max-h-[200px] bg-white focus:ring-2 focus:ring-blue-500"
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = "auto";
+                        target.style.height = `${target.scrollHeight}px`;
+                      }}
+                      
+                    onKeyDown={(e)=>{
+                      if(e.key === "Enter" && !e.shiftKey){
+                        e.preventDefault();
+                        form.handleSubmit(onSubmit)();
+                      }
+                    }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -282,8 +295,8 @@ function ChatbotPage() {
 
             <Button
               type="submit"
-              className="h-full"
-              disabled={form.formState.isSubmitting || !form.formState.isValid}
+              className="h-full cursor-pointer"
+              disabled={form.formState.isSubmitting || !form.formState.isValid || messageLoading}
             >
               Send
             </Button>
