@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { HeroSection } from "../../../components/HeroSection";
 import { FeaturesSection } from "../../../components/FeatureSection";
 import { StepsSection } from "../../../components/StepsSection";

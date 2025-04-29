@@ -147,7 +147,7 @@ export function HeroSection() {
                         <Bot className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       </div>
                       <div className="bg-blue-50 dark:bg-slate-800 rounded-lg rounded-tl-none p-3 text-sm text-slate-700 dark:text-slate-300">
-                        I'd be happy to help with your online store setup! Let's
+                        I&apos;d be happy to help with your online store setup! Let&apos;s
                         start with the basics. What platform are you using for
                         your store?
                       </div>
