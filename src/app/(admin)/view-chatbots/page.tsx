@@ -41,10 +41,11 @@ function ViewChatbots() {
   );
 
   if (!user?.id) return;
-  if (loading) return <Loading/>;
+  if (loading) return <Loading />;
 
   return (
-    <div className="flex-1 pb-20 p-10">
+    
+    <div className="flex-1 pb-20 p-10 max-w-5xl mx-auto w-full  rounded-md mt-10">
       <h1 className="text-xl lg:text-3xl font-semibold mb-5">
         Active Chatbots
       </h1>
@@ -61,10 +62,10 @@ function ViewChatbots() {
           </Link>
         </div>
       )}
-      <ul className="flex flex-col space-y-5">
+      <ul className="flex flex-col space-y-5 w-[100%]">
         {sortedChatbots.map((chatbot) => (
           <Link key={chatbot.id} href={`/edit-chatbot/${chatbot.id}`}>
-            <li className="relative p-10 border rounded-md max-w-3xl bg-white">
+            <li className="relative p-10 border rounded-md w-[100%] md:max-w-5xl bg-white">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                   <Avatar seed={chatbot.name} />
@@ -77,26 +78,29 @@ function ViewChatbots() {
               </div>
 
               <hr className="mt-4" />
-              <div className="grid grid-cols-2 gap-10 md:gap-5 p-5">
-                <h3 className="italic">Characteristics:</h3>
+              <div className="flex flex-col gap-10 md:gap-5 p-5">
+                <div className="flex flex-col">
+                  <h3 className="italic">Characteristics:</h3>
 
-                <ul className="text-xs">
-                  {!chatbot.chatbotCharacteristics.length && (
-                    <p>No characteristics added yet.</p>
-                  )}
+                  <ul className="text-xs w-[50%] md:w-full">
+                    {!chatbot.chatbotCharacteristics.length && (
+                      <p>No characteristics added yet.</p>
+                    )}
 
-                  {chatbot.chatbotCharacteristics.map((characteristic) => (
-                    <li
-                      className="list-disc break-words"
-                      key={characteristic.id}
-                    >
-                      {characteristic.content}
-                    </li>
-                  ))}
-                </ul>
-
-                <h3 className="italic">No. of Sessions:</h3>
-                <p>{chatbot.chatSessions.length}</p>
+                    {chatbot.chatbotCharacteristics.map((characteristic) => (
+                      <li
+                        className="list-disc break-words"
+                        key={characteristic.id}
+                      >
+                        {characteristic.content}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="flex md:flex-row">
+                  <h3 className="italic">No. of Sessions:</h3>
+                  <p>{chatbot.chatSessions.length}</p>
+                </div>
               </div>
             </li>
           </Link>

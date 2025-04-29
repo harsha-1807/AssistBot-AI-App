@@ -26,7 +26,7 @@ function Sidebar() {
             <PencilLine className="h-6 w-6 lg:h-8 lg:w-8" />
             <div className="hidden md:inline">
               <p className="text-xl">Edit</p>
-              <p className="text-sm font-extralight">Chatbots</p>
+              <p className="text-sm font-extralight">Your Chatbots</p>
             </div>
           </Link>
         </li>

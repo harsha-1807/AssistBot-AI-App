@@ -46,6 +46,8 @@ export async function POST(req: NextRequest) {
       "Use emojis where appropriate.",
       `your name is ${chatbot.name}`,
       "In first reply add a about myself area to tell about yourself",
+      "previous messages:",
+      ...previousMessages.map((msg) => msg.content),
     ].join(" ");
 
     // Initialize Gemini model
