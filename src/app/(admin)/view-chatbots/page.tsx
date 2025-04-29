@@ -44,7 +44,8 @@ function ViewChatbots() {
   if (loading) return <Loading />;
 
   return (
-    <div className="flex-1 pb-20 p-10">
+    
+    <div className="flex-1 pb-20 p-10 max-w-5xl mx-auto w-full  rounded-md mt-10">
       <h1 className="text-xl lg:text-3xl font-semibold mb-5">
         Active Chatbots
       </h1>
@@ -64,7 +65,7 @@ function ViewChatbots() {
       <ul className="flex flex-col space-y-5 w-[100%]">
         {sortedChatbots.map((chatbot) => (
           <Link key={chatbot.id} href={`/edit-chatbot/${chatbot.id}`}>
-            <li className="relative p-10 border rounded-md w-[100%] md:max-w-3xl bg-white">
+            <li className="relative p-10 border rounded-md w-[100%] md:max-w-5xl bg-white">
               <div className="flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                   <Avatar seed={chatbot.name} />
