@@ -125,7 +125,7 @@ export function TestimonialsSection() {
                 </div>
                 <blockquote className="text-center">
                   <p className="text-sm md:text-lg text-slate-700 dark:text-slate-300 italic mb-4">
-                    "{testimonials[current].quote}"
+                  &ldquo;{testimonials[current].quote}&rdquo;
                   </p>
                   <footer>
                     <div className="flex flex-col items-center">
